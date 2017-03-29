@@ -1,0 +1,1 @@
+http://scipy.github.io/old-wiki/pages/Tentative_NumPy_Tutorial#Prerequisites
