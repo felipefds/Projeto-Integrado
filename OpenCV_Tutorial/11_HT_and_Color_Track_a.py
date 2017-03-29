@@ -4,8 +4,7 @@ import numpy as np
 
 #image = cv2.imread("rainbow.jpg",1);
 
-#filename = 'tennis_ball_3.jpg'
-filename = 'desafio_flop.jpg'
+filename = 'tennis_ball_3.jpg'
 
 original_image = cv2.imread(filename,1);
 image = cv2.imread(filename,1);
@@ -13,12 +12,8 @@ image = cv2.medianBlur(image,5);
 
 
 #define color boundaries in BGR
-#lower_green = [0, 100, 100];
-#upper_green = [70, 255, 255];
-
-lower_green = [0,0,0];
-upper_green = [0,0,255];
-
+lower_green = [0, 100, 100];
+upper_green = [70, 255, 255];
 
 # define the list of boundaries
 boundaries = [

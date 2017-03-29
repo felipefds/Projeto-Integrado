@@ -4,8 +4,8 @@ import numpy as np
 image = cv2.imread("rainbow.jpg",1);
 
 #define color boundaries in BGR
-lower_red = [17,0,0];
-upper_red = [50,100,255];
+lower_red = [17,15,100];
+upper_red = [50,56,200];
 
 lower_blue = [86,31,4];
 upper_blue = [220,88,50];
