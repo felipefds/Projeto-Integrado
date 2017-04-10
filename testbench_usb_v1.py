@@ -1,9 +1,10 @@
 import serial
+import time
 
 serialPorts = ['/dev/ttyACM0','/dev/ttyACM1','/dev/ttyACM2','/dev/ttyACM3',
             'COM1','COM2','COM3','COM4'];
 
-text = "N45;L8;S130;O70"
+text = "45;8;60;70;" #Norte, Leste, Sul, Oeste
 
 def GetSerialPort():
     for port in serialPorts:
@@ -41,7 +42,7 @@ def SendTextToPort(port):
 
         VALUE_SERIAL=comport.readline()
 
-        print '\nSendTextToPort(): Retorno da serial - %s' % (VALUE_SERIAL)
+        print 'SendTextToPort(): Retorno da serial - %s' % (VALUE_SERIAL)
 
         # Fechando conexao serial
         comport.close();
@@ -49,11 +50,5 @@ def SendTextToPort(port):
 print ("Inicio:");
 #CheckPorts();
 port = GetSerialPort();
-try:
-    SendTextToPort(port);
-except:
-    port = GetSerialPort();
-    try:
-        SendTextToPort(port);
-    except:
-        print("Connection Error.");
+
+SendTextToPort(port);
