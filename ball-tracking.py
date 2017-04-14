@@ -8,8 +8,14 @@ import cv2
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
+
+#Green
 greenLower = (29, 86, 6)
 greenUpper = (64, 255, 255)
+
+#Blue
+#greenLower = (86, 31, 4);
+#greenUpper = (220, 88, 50);
 
 pts = deque(maxlen=64)
 
