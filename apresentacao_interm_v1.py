@@ -69,7 +69,7 @@ def GetMicAngle (xTarget, yTarget, wing, xMic, yMic):
             return math.trunc(angle);
         else:
             angle = 180-math.fabs(math.degrees(math.atan((yTarget-yMic)/(xTarget-xMic))));
-            return math.trunch(angle);
+            return math.trunc(angle);
 
     elif (wing == "NORTH"):
         if (xTarget == xMic):

@@ -1,13 +1,20 @@
 #include <string.h>
 #include <stdlib.h>
-//#include <Servo.h>
+#include <LiquidCrystal.h>
+#include <Servo.h>
+
+LiquidCrystal lcd(8, 9, 4, 5, 6, 7); 
 
 #define MAX_CARACTERS    100
-#define MAX_ORDEM_ANGULO 3
+#define MAX_ORDEM_ANGULO 3 + 1
+#define PIN_SERVO_NORTE  36    
+#define PIN_SERVO_SUL    40
 
-unsigned count = 0;
-unsigned positionMic = 1;
-//Servo s;
+unsigned count;
+unsigned positionMic;
+char *validacao;
+Servo s_norte;
+Servo s_sul;
 
 char anguloNorte [MAX_ORDEM_ANGULO];
 char anguloLeste [MAX_ORDEM_ANGULO];
@@ -16,10 +23,15 @@ char anguloOeste [MAX_ORDEM_ANGULO];
 
 void setup()
 {
- //s.attach(SERVO);
+ s_norte.attach(PIN_SERVO_NORTE);
+ s_sul.attach(PIN_SERVO_SUL);
+ 
  Serial.begin(9600);
  pinMode(13,OUTPUT); //para indicar que chegou no 4o angulo (OESTE)
- //s.write(0); 
+ lcd.begin(16, 2);         // start the library
+ lcd.setCursor(0,0);       // set the LCD cursor   position
+ s_norte.write(0);
+ s_sul.write(0); 
 }
 
 char receivedChar;
@@ -27,17 +39,12 @@ char textoCompleto[MAX_CARACTERS];
 int contador = 0;
 
 void loop() { 
-  contador = 0;
+  positionMic = 1;
+  count = 0;
   
   while (Serial.available() > 0) {
 
     receivedChar = Serial.read();
-    //name[count] = Serial.read();
-    //name[count] = received[0];
-    
-    textoCompleto[contador] = receivedChar;
-    contador++;
-
     /*
     A porta serial eh uma fila e a cada Serial.read()
     retiramos um caracter dessa fila. Entao, fazer 
@@ -46,60 +53,70 @@ void loop() {
       anguloNorte[count] = Serial.read();
     retira DOIS caracteres da fila.
     */
-
     if (receivedChar != ';'){
       if (positionMic == 1){
-        //anguloNorte[count] = Serial.read();
         anguloNorte[count] = receivedChar;
         count++;
       }
       if (positionMic == 2){
-        //anguloLeste[count] = Serial.read();
         anguloLeste[count] = receivedChar;
         count++;
       }
       if (positionMic == 3){
-        //anguloSul[count] = Serial.read();
         anguloSul[count] = receivedChar;
         count++;
       }
       if (positionMic == 4){
         digitalWrite(13,HIGH); //Indica que chegou no 4o angulo
-        //anguloOeste[count] = Serial.read();
         anguloOeste[count] = receivedChar;        
         count++;
       }
     } 
-    else {
+    else {      
+      if (positionMic == 1)
+        anguloNorte[count] = '\0';
+      
+      if (positionMic == 2)
+        anguloLeste[count] = '\0';
+       
+      if (positionMic == 3)
+        anguloSul[count] = '\0';
+      
+      if (positionMic == 4)
+        anguloOeste[count] = '\0';
+      
       positionMic++;
-      count = 0;
-    }
-    if (positionMic == 5){
-      positionMic = 1;
-      
-      delay(2000); // Tempo necessario para o python parar de escrever na USB. Assim, so um programa escreve nela
-      digitalWrite(13,LOW); // Indica que ja podemos escrever na porta serial.
-      
-      Serial.print("Texto: ");
-      Serial.println(textoCompleto); // Problema: so esta vindo ";" em textoCompleto
-      
-      Serial.print ("Angulo Norte: ");
-      Serial.println(anguloNorte);
-      
-      Serial.print ("Angulo Leste: ");
-      Serial.println(anguloLeste);
-      
-      Serial.print ("Angulo Sul: ");
-      Serial.println(anguloSul);
-            
-      Serial.print ("Angulo Oeste: ");
-      Serial.println(anguloOeste);
+      count = 0;      
     }
   }
-  
-  //Fim da Leitura Serial
-  //s.write(strtol(anguloNorte));
-  //s.write(strtol(anguloLeste));
-  //s.write(strtol(anguloSul));
-  //s.write(strtol(anguloOeste));
+
+  lcd.clear();
+  lcd.print("Angulo Norte");
+  lcd.setCursor(0,1);
+  lcd.print(anguloNorte);
+  delay(2000);
+
+  lcd.clear();
+  lcd.print("Angulo Leste");
+  lcd.setCursor(0,1);
+  lcd.print(anguloLeste);
+  delay(2000);
+
+
+  lcd.clear();
+  lcd.print("Angulo Sul");
+  lcd.setCursor(0,1);
+  lcd.print(anguloSul);
+  delay(2000);
+
+  lcd.clear();
+  lcd.print("Angulo Oeste");
+  lcd.setCursor(0,1);
+  lcd.print(anguloOeste);
+  delay(2000);
+
+  s_norte.write(strtoul(anguloNorte, &validacao, 10));
+  //s.write(strtoul(anguloLeste, &validacao, 10));
+  s_sul.write(strtoul(anguloSul, &validacao, 10));
+  //s.write(strtoul(anguloOeste, &validacao, 10));
 } //Fim do loop
