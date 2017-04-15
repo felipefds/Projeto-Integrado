@@ -7,14 +7,15 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 #define MAX_CARACTERS    100
 #define MAX_ORDEM_ANGULO 3 + 1
-#define PIN_SERVO_NORTE  36    
-#define PIN_SERVO_SUL    40
+#define PIN_SERVO_NORTE  3    
+#define PIN_SERVO_SUL    4
 
 unsigned count;
 unsigned positionMic;
 char *validacao;
 Servo s_norte;
 Servo s_sul;
+boolean sendAngle;
 
 char anguloNorte [MAX_ORDEM_ANGULO];
 char anguloLeste [MAX_ORDEM_ANGULO];
@@ -41,6 +42,7 @@ int contador = 0;
 void loop() { 
   positionMic = 1;
   count = 0;
+  sendAngle = false;
   
   while (Serial.available() > 0) {
 
@@ -82,26 +84,41 @@ void loop() {
       if (positionMic == 3)
         anguloSul[count] = '\0';
       
-      if (positionMic == 4)
+      if (positionMic == 4){
         anguloOeste[count] = '\0';
-      
+        sendAngle = true;
+      }
       positionMic++;
       count = 0;      
     }
   }
-
+  
+  if (sendAngle == true){
+    Serial.print("Angulo Norte: ");
+    Serial.println(anguloNorte);
+    Serial.print("Angulo Leste: ");
+    Serial.println(anguloLeste);
+    Serial.print("Angulo Sul: ");
+    Serial.println(anguloSul);
+    Serial.print("Angulo Oeste: ");
+    Serial.println(anguloOeste);  
+    s_norte.write(strtoul(anguloNorte, &validacao, 10));
+    //s.write(strtoul(anguloLeste, &validacao, 10));
+    s_sul.write(strtoul(anguloSul, &validacao, 10));
+    //s.write(strtoul(anguloOeste, &validacao, 10));
+  }
+  
   lcd.clear();
   lcd.print("Angulo Norte");
   lcd.setCursor(0,1);
-  lcd.print(anguloNorte);
+  lcd.print(anguloNorte);  
   delay(2000);
 
   lcd.clear();
   lcd.print("Angulo Leste");
   lcd.setCursor(0,1);
-  lcd.print(anguloLeste);
+  lcd.print(anguloLeste);  
   delay(2000);
-
 
   lcd.clear();
   lcd.print("Angulo Sul");
@@ -112,11 +129,7 @@ void loop() {
   lcd.clear();
   lcd.print("Angulo Oeste");
   lcd.setCursor(0,1);
-  lcd.print(anguloOeste);
+  lcd.print(anguloOeste);  
   delay(2000);
 
-  s_norte.write(strtoul(anguloNorte, &validacao, 10));
-  //s.write(strtoul(anguloLeste, &validacao, 10));
-  s_sul.write(strtoul(anguloSul, &validacao, 10));
-  //s.write(strtoul(anguloOeste, &validacao, 10));
 } //Fim do loop

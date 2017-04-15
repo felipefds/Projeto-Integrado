@@ -47,7 +47,7 @@ def SendTextToPort(text,port):
         comport.flush();
 
         # Time entre a conexao serial e o tempo para escrever (enviar algo)
-        time.sleep(1.5); # Entre 1.5s a 2s
+        #time.sleep(1.5); # Entre 1.5s a 2s
 
         for i in range (len(text)):
             comport.write(text[i].encode());
@@ -107,7 +107,7 @@ eastMic.angle = GetMicAngle (xTarget, yTarget, eastMic.wing, eastMic.x, eastMic.
 southMic.angle = GetMicAngle (xTarget, yTarget, southMic.wing, southMic.x, southMic.y);
 westMic.angle = GetMicAngle (xTarget, yTarget, westMic.wing, westMic.x, westMic.y);
 
-text = str(northMic.angle) + ';' + str(eastMic.angle) + ';' + str(southMic.angle) + ';' + str(westMic.angle);
+text = str(northMic.angle) + ';' + str(eastMic.angle) + ';' + str(southMic.angle) + ';' + str(westMic.angle) + ';';
 
 #CheckPorts();
 port = GetSerialPort();
