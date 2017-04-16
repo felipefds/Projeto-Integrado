@@ -1,3 +1,6 @@
 {
-    "port": "COM3"
+    "port": "COM3",
+    "board": "arduino:avr:mega",
+    "configuration": "cpu=atmega2560",
+    "sketch": "ard_mainProgram_v2\\ard_mainProgram_v2.ino"
 }
