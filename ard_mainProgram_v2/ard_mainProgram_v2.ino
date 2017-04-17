@@ -7,20 +7,20 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 #define MAX_CARACTERS    100
 #define MAX_ORDEM_ANGULO 3 + 1
-#define PIN_SERVO_NORTE  3    
-#define PIN_SERVO_SUL    4
+#define PIN_SERVO_NORTE  34    
+#define PIN_SERVO_SUL    40
 
 unsigned count;
 unsigned positionMic;
 char *validacao;
-Servo s_norte;
-Servo s_sul;
-boolean sendAngle;
-
 char anguloNorte [MAX_ORDEM_ANGULO];
 char anguloLeste [MAX_ORDEM_ANGULO];
 char anguloSul [MAX_ORDEM_ANGULO];
 char anguloOeste [MAX_ORDEM_ANGULO];
+char receivedChar;
+//boolean sendAngle;
+Servo s_norte;
+Servo s_sul;
 
 void setup()
 {
@@ -35,17 +35,21 @@ void setup()
  s_sul.write(0); 
 }
 
-char receivedChar;
-char textoCompleto[MAX_CARACTERS];
-int contador = 0;
-
 void loop() { 
   positionMic = 1;
   count = 0;
-  sendAngle = false;
-  
-  while (Serial.available() > 0) {
+  //sendAngle = false;
 
+  /*lcd.clear();
+  lcd.print(Serial.available());
+  delay (333);*/
+
+ while (Serial.available()  == 0) {
+  //while (1 > 0) {
+    lcd.clear();
+    lcd.print("TESTANDO!!");
+    delay (2);
+  
     receivedChar = Serial.read();
     /*
     A porta serial eh uma fila e a cada Serial.read()
@@ -74,7 +78,7 @@ void loop() {
         count++;
       }
     } 
-    else {      
+    else {
       if (positionMic == 1)
         anguloNorte[count] = '\0';
       
@@ -86,14 +90,14 @@ void loop() {
       
       if (positionMic == 4){
         anguloOeste[count] = '\0';
-        sendAngle = true;
+        //sendAngle = true;
       }
       positionMic++;
       count = 0;      
     }
   }
   
-  if (sendAngle == true){
+  /*if (sendAngle == true){
     Serial.print("Angulo Norte: ");
     Serial.println(anguloNorte);
     Serial.print("Angulo Leste: ");
@@ -106,9 +110,11 @@ void loop() {
     //s.write(strtoul(anguloLeste, &validacao, 10));
     s_sul.write(strtoul(anguloSul, &validacao, 10));
     //s.write(strtoul(anguloOeste, &validacao, 10));
-  }
-  
-  lcd.clear();
+  }*/
+  s_norte.write(strtoul(anguloNorte, &validacao, 10));
+  s_sul.write(strtoul(anguloSul, &validacao, 10));
+
+  /*lcd.clear();
   lcd.print("Angulo Norte");
   lcd.setCursor(0,1);
   lcd.print(anguloNorte);  
@@ -130,6 +136,5 @@ void loop() {
   lcd.print("Angulo Oeste");
   lcd.setCursor(0,1);
   lcd.print(anguloOeste);  
-  delay(2000);
-
+  delay(2000);*/
 } //Fim do loop
