@@ -51,7 +51,7 @@ def SendTextToPort(text,port):
 
         for i in range (len(text)):
             comport.write(text[i].encode());
-            time.sleep(2);
+            #time.sleep(2);
         #comport.write(PARAM_ASCII)
 
         VALUE_SERIAL=comport.readline();
