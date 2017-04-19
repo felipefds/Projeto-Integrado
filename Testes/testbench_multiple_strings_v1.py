@@ -66,10 +66,11 @@ def WaitNextString(port):
         print "WaitNextString(): No microcontrollers connected."
     else:
         comport = serial.Serial(port, 9600, timeout = 1);
-        #VALUE_SERIAL=comport.readline();
+        VALUE_SERIAL=comport.read();
         while (VALUE_SERIAL != '.'):
-            VALUE_SERIAL=comport.readline();
-            #time.sleep(0.5);
+            VALUE_SERIAL=comport.read();
+            print 'SendTextToPort(): Serial port return - %s' % (VALUE_SERIAL);
+            time.sleep(0.5);
 
         #Fechando conexao Serial
         comport.close();
