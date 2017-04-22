@@ -26,7 +26,7 @@ def GetSerialPort():
             comport = serial.Serial(port, 9600, timeout = 1);
             time.sleep(1.8); # Entre 1.5s a 2s
             if (comport.isOpen() == True):
-                print "Port to be used: " + port;
+                print ("Port to be used: " + port);
                 comport.flush();
                 comport.close();
                 return port;
@@ -37,10 +37,10 @@ def GetSerialPort():
 
 def SendTextToPort(text,port):
 
-    print "SendTextToPort(): Text to be sent - " + text;
+    print ("SendTextToPort(): Text to be sent - " + text);
 
     if (port == "0"):
-        print "SendTextToPort(): No microcontrollers connected.";
+        print ("SendTextToPort(): No microcontrollers connected.");
 
     else:
         comport = serial.Serial(port, 9600, timeout = 1);
@@ -63,7 +63,7 @@ def SendTextToPort(text,port):
 def WaitNextString(port):
     # Wait for arduino to send a '.' character, indicating he can receive next ball position
     if (port == "0"):
-        print "WaitNextString(): No microcontrollers connected."
+        print ("WaitNextString(): No microcontrollers connected.");
     else:
         comport = serial.Serial(port, 9600, timeout = 1);
         VALUE_SERIAL=comport.read();
@@ -113,7 +113,7 @@ def GetMicAngle (xTarget, yTarget, wing, xMic, yMic):
         return "Error";
 
 
-print ('#Args:' + str(len(sys.argv))s);
+print ('#Args:' + str(len(sys.argv)));
 
 if ((len(sys.argv) % 2 == 0) or (len(sys.argv) == 1)):
     print ("Error: Please type an odd number.");
@@ -127,7 +127,7 @@ for arg in range(1,len(sys.argv)):
     #print sys.argv[arg];
     if (arg % 2 == 1):
         xTarget = int(sys.argv[arg]);
-    if (arg % 2 == 0):
+    else:
         yTarget = int(sys.argv[arg]);
         positionsList.append((xTarget,yTarget));
         #print (positionsList[tuplesCounter]);
