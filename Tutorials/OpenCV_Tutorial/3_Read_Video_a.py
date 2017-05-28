@@ -12,7 +12,7 @@ while(True):
     # Capture frame-by-frame
     ret, frame = cap.read();
     """cap.read() returns a bool (True/False). If frame is read correctly, it will be True. So you can check end of the video by checking this return value."""
-    
+
     # Our operations on the frame come here
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY);
 

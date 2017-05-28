@@ -9,17 +9,21 @@ import cv2
 # ball in the HSV color space, then initialize the
 # list of tracked points
 
-#Green
-greenLower = (29, 86, 6)
-greenUpper = (64, 255, 255)
+#Green Original in HSV
+#greenLower = (29, 86, 6)
+#greenUpper = (64, 255, 255)
 
-#Blue
-#greenLower = (86, 31, 4);
-#greenUpper = (220, 88, 50);
+#Red_1 in HSV
+greenLower = (113, 88, 245);
+greenUpper = (255, 255, 255);
+
+#Red_2 in HSV
+#greenLower = (113, 88, 245);
+#greenUpper = (255, 255, 122);
 
 pts = deque(maxlen=64)
 
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(1)
 
 # keep looping
 while True:
@@ -31,7 +35,7 @@ while True:
 	# color space
 	frame = imutils.resize(frame, width=600)
 	blurred = cv2.GaussianBlur(frame, (11, 11), 0) #reduce high frequency noise
-	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+	hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 
 	# construct a mask for the color "green", then perform
 	# a series of dilations and erosions to remove any small
