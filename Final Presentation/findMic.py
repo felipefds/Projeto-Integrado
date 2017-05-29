@@ -51,9 +51,14 @@ while True:
         # it to compute the minimum enclosing circle and
         # centroid
         #c = max(cnts, key=cv2.contourArea)
+
+        cnts_array = [];
+
         for c in cnts:
-            ((x, y), radius) = cv2.minEnclosingCircle(c)
-            M = cv2.moments(c)
+            ((x, y), radius) = cv2.minEnclosingCircle(c);
+            cnts_array.append((x,y));
+
+            M = cv2.moments(c);
             center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
     		# only proceed if the radius meets a minimum size
@@ -70,7 +75,52 @@ while True:
 
 	# if the 'q' key is pressed, stop the loop
     if key == ord("q"):
-        break
+        break;
+
+    # Getting Microphones Positions -------------------
+    if key == ord("m"):
+        print "Getting microphones positions..."
+        (x_north, y_north) = (0,0);
+        (x_east, y_east) = (0,0);
+        (x_south, y_south) = (0,0);
+        (x_west, y_west) = (0,0);
+
+        #Get frame size (heigth and width)
+        (frame_height, frame_width,_) = frame.shape; #frame.shape(height, width, channels)
+
+        # Separating microphones
+        for (x,y) in cnts_array:
+            if ( ((0.5-0.25)*frame_width < x) and (x < (0.5+0.25)*frame_width) and (y < 0.25*frame_height)):
+                if (x_north,y_north) == (0,0):
+                    (x_north,y_north) = (x,y);
+                else:
+                    (x_north,y_north) = ( 0.5*(x+x_north), 0.5*(y+y_north));
+
+            if ( ((0.5-0.25)*frame_width < x) and (x < (0.5+0.25)*frame_width) and (0.75*frame_height < y)):
+                if (x_south,y_south) == (0,0):
+                    (x_south,y_south) = (x,y);
+                else:
+                    (x_south,y_north) = ( 0.5*(x+x_south), 0.5*(y+y_south));
+
+            if ( ((0.5-0.25)*frame_height < y) and (y < (0.5+0.25)*frame_height) and (0.75*frame_width < x)):
+                if (x_east,y_east) == (0,0):
+                    (x_east,y_east) = (x,y);
+                else:
+                    (x_east,y_east) = ( 0.5*(x+x_east), 0.5*(y+y_east));
+
+            if ( ((0.5-0.25)*frame_height < y) and (y < (0.5+0.25)*frame_height) and (x < 0.25*frame_width)):
+                if (x_west,y_west) == (0,0):
+                    (x_west,y_west) = (x,y);
+                else:
+                    (x_west,y_west) = ( 0.5*(x+x_west), 0.5*(y+y_west));
+
+        print ("North: " + str((x_north,y_north)));
+        print ("East: " + str((x_east,y_east)));
+        print ("South: " + str((x_south,y_south)));
+        print ("West: " + str((x_west,y_west)));
+
+        print "Microphones positions saved."
+
     if key == ord("s"):
         print "Saving frame...";
         cv2.imwrite('findMic.png',frame);
