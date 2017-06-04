@@ -8,6 +8,8 @@ import time
 import cv2
 
 # Field Settings --------------------
+serialPorts = ['/dev/ttyACM0','/dev/ttyACM1','/dev/ttyACM2','/dev/ttyACM3',
+            'COM1','COM2','COM3','COM4'];
 
 class Mic(object):
     def __init__(self, wing, x, y):
@@ -16,6 +18,64 @@ class Mic(object):
         self.y = y;
 
     angle = 0;
+
+
+# Serial Ports Functions
+
+def GetSerialPort():
+    for port in serialPorts:
+        try:
+            # Iniciando conexao serial
+            comport = serial.Serial(port, 9600, timeout = 1);
+            time.sleep(1.8); # Entre 1.5s a 2s
+            if (comport.isOpen() == True):
+                print ("Port to be used: " + port);
+                comport.flush();
+                comport.close();
+                return port;
+        except:
+            pass;
+
+    return "0";
+
+def SendTextToPort(text,port):
+
+    print ("SendTextToPort(): Text to be sent - " + text);
+
+    if (port == "0"):
+        print ("SendTextToPort(): No microcontrollers connected.");
+
+    else:
+        #comport = serial.Serial(port, 9600, timeout = 1);
+        comport.flush();
+
+        # Time entre a conexao serial e o tempo para escrever (enviar algo)
+        #time.sleep(1.5); # Entre 1.5s a 2s
+
+        for i in range (len(text)):
+            comport.write(text[i].encode());
+            #time.sleep(2);
+        #comport.write(PARAM_ASCII)
+
+        #VALUE_SERIAL=comport.readline();
+        #print 'SendTextToPort(): Serial port return - %s' % (VALUE_SERIAL);
+
+        # Fechando conexao serial
+        #comport.close();
+
+def CheckNextStringAllowed(port):
+    # Wait for arduino to send a '.' character, indicating he can receive next ball position
+    if (port == "0"):
+        print ("WaitNextString(): No microcontrollers connected.");
+    else:
+        #comport = serial.Serial(port, 9600, timeout = 1);
+        VALUE_SERIAL=comport.read();
+        #comport.close();
+        if (VALUE_SERIAL == '.'):
+            return True;
+
+        return False;
+
 
 def GetMicAngle (xTarget, yTarget, wing, xMic, yMic):
 
@@ -42,17 +102,18 @@ def GetMicAngle (xTarget, yTarget, wing, xMic, yMic):
     elif (wing == "EAST"):
         if (yTarget == yMic):
             return 90;
-        angle = 180-GetMicAngle (yTarget, xTarget, "NORTH", yMic, xMic);
+        angle = GetMicAngle (yTarget, xTarget, "NORTH", yMic, xMic);
         return angle;
 
     elif (wing == "WEST"):
         if (yTarget == yMic):
             return 90;
-        angle = GetMicAngle (yTarget, xTarget, "NORTH", yMic, xMic);
+        angle = 180-GetMicAngle (yTarget, xTarget, "NORTH", yMic, xMic);
         return angle;
 
     else:
         return "Error";
+
 
 #Initializing Mics Objects
 northMic = Mic ('North', 0, 0);
@@ -78,8 +139,21 @@ pts = deque(maxlen=64);
 
 camera = cv2.VideoCapture(1);
 
+savingVideo = False;
+videoFileCreated = False;
+sendNextString = False;
+
+port = GetSerialPort();
+
+comport = serial.Serial(port, 9600, timeout = 1);
+
+timeInitialized = False;
+time_zero = time.time();
+TIME_DELAY = 0.25;
 # keep looping
 while True:
+
+
 	# grab the current frame
     (grabbed, frame) = camera.read();
 		#grabbed == boolean
@@ -102,7 +176,7 @@ while True:
     center = None;
 
     (x,y) = (0,0);
-    text = "90;90;90;90";
+    text = "90;90;90;90;";
     angleTextToDisplay = "No points to center. " + text;
     micTextToDisplay = "No microphones to center."
 
@@ -123,6 +197,8 @@ while True:
 		# only proceed if the radius meets a minimum size
         if radius > 10:
 			# draw the circle and centroid on the frame,
+
+
 			# then update the list of tracked points
 			cv2.circle(frame, (int(x), int(y)), int(radius),(0, 255, 255), 2);
 			cv2.circle(frame, center, 5, (0, 0, 255), -1);
@@ -137,6 +213,17 @@ while True:
 
             text = str(northMic.angle) + ';' + str(eastMic.angle) + ';' + str(southMic.angle) + ';' + str(westMic.angle) + ';';
             angleTextToDisplay = "["+str(int(x))+";"+str(int(y))+"]"+ "  " + text;
+
+            # sending text to serial port
+            if (time.time() - time_zero > TIME_DELAY):
+                time_zero = time.time();
+                if (port == "0"):
+                    #port = GetSerialPort();
+                    pass;
+                else:
+                    sendNextString = CheckNextStringAllowed(port);
+                    if (sendNextString == True):
+                        SendTextToPort(text,port);
 
             cv2.circle(frame, (int(northMic.x), int(northMic.y)), 20,(0, 255, 255), 2);
             cv2.circle(frame, (int(eastMic.x), int(eastMic.y)), 20,(0, 255, 255), 2);
@@ -174,7 +261,11 @@ while True:
 
 	# show the frame to our screen
     cv2.imshow("Frame", frame);
-    cv2.imshow("Mask", mask);
+    #cv2.imshow("Mask", mask);
+
+
+
+
     key = cv2.waitKey(1) & 0xFF;
 
     # if the 'q' key is pressed, stop the loop
@@ -185,10 +276,6 @@ while True:
 		print "Saving frame...";
 		cv2.imwrite('finalPresentation.png',frame);
 		print "Frame Saved";
-
-    if key == ord("v"):
-        print "Saving Video...";
-        print "Video saved.";
 
     if key == ord("m"):
         print "Setting microphones positions...";
@@ -263,7 +350,7 @@ while True:
         (eastMic.x, eastMic.y) = (x_east, y_east);
         (southMic.x, southMic.y) = (x_south, y_south);
         (westMic.x, westMic.y) = (x_west, y_west);
-
+        
         print ("North: " + str((northMic.x ,northMic.y)));
         print ("East: " + str((eastMic.x ,eastMic.y)));
         print ("South: " + str((southMic.x ,southMic.y)));
@@ -274,6 +361,40 @@ while True:
         print "Microphones positions set.";
 
 
+    #Saving Video
+    if ((videoFileCreated == False) and (savingVideo == True)):
+        # Create video file
+        (frame_height, frame_width,_) = frame.shape;
+        #fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        fourcc = cv2.cv.CV_FOURCC(*'XVID')
+        out = cv2.VideoWriter('teste.avi',fourcc, 30.0, (frame_width, frame_height))
+        print "Video file created.";
+        videoFileCreated = True;
+
+    if (savingVideo == True):
+        # Save frames to video file.
+        out.write(frame);
+        pass;
+
+    if key == ord("v"):
+        if savingVideo == False:
+            print "Saving video...";
+            savingVideo = True;
+
+        else:
+            print "Video saved.";
+            #Release video file
+            out.release();
+            savingVideo = False;
+            videoFileCreated = False;
+
 # cleanup the camera and close any open windows
+try:
+    if out.isOpened():
+        out.release();
+except:
+    pass;
+
+comport.close();
 camera.release()
 cv2.destroyAllWindows()

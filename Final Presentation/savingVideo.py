@@ -19,7 +19,7 @@ blueUpper = (152, 196, 255);
 
 pts = deque(maxlen=64)
 
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(1)
 
 savingVideo = False;
 videoFileCreated = False;
@@ -136,7 +136,8 @@ while True:
     if ((videoFileCreated == False) and (savingVideo == True)):
         # Create video file
         (frame_height, frame_width,_) = frame.shape;
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        #fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        fourcc = cv2.cv.CV_FOURCC(*'XVID')
         out = cv2.VideoWriter('teste.avi',fourcc, 30.0, (frame_width, frame_height))
         print "Video file created.";
         videoFileCreated = True;

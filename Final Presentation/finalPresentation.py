@@ -42,13 +42,13 @@ def GetMicAngle (xTarget, yTarget, wing, xMic, yMic):
     elif (wing == "EAST"):
         if (yTarget == yMic):
             return 90;
-        angle = 180-GetMicAngle (yTarget, xTarget, "NORTH", yMic, xMic);
+        angle = GetMicAngle (yTarget, xTarget, "NORTH", yMic, xMic);
         return angle;
 
     elif (wing == "WEST"):
         if (yTarget == yMic):
             return 90;
-        angle = GetMicAngle (yTarget, xTarget, "NORTH", yMic, xMic);
+        angle = 180-GetMicAngle (yTarget, xTarget, "NORTH", yMic, xMic);
         return angle;
 
     else:

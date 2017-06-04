@@ -1,0 +1,44 @@
+\section{Caracterização}
+	Como visto no capítulo \ref{cap1}, a tecnologia 5G possui diversas exigências de transmissão de dados, como velocidade, capacidade e área de cobertura.  No entanto, para melhorar as características de transmissão do 4G, a eficiência da utilização dos canais deve ser maximizada. Por exemplo, para inserir mais usuários no mesmo canal imperfeito sem que um interfira no outro, é preciso que haja uma exploração eficiente das bandas de frequência do canal. Para isso, diversas técnicas de processamento digital de sinais são utilizadas, como a utilização de banco de filtros, que será discutida nas seções a seguir.
+	
+\section{O Canal com Ruído}
+
+	\begin{figure}
+		\centering
+			\includegraphics[scale=1.0]{./FIGURAS/fig1-canal.pdf}
+		\caption{Modelagem do canal com ruído}
+		\label{fig:canalRuidoso}
+	\end{figure}
+	
+
+	Considere o canal modelado como um SLIT de função de transferência $C(z)$, como modelado na figura  \ref{fig:canalRuidoso}. O sinal $x[n]$ a ser transmitido pode assumir um número finito de valores, chamado de constelação, que pode ser PAM ou QAM, por exemplo. O sinal $y[n]$ é uma versão ruidosa e distorcida do sinal $x[n]$. O detector no receptor tem a função de obter uma estimativa $\hat{x}[n]$ o mais próximo possível de $x[n]$, segundo a mesma constelação pré-estabelecida. Para toda estimativa do detector, existe uma probabilidade $P_e$ não nula de acerto devido à introdução do ruído $e[n]$. Para cada aplicação, existe um valor específico de $P_e$. \\
+	\paragraph{} Na prática, este modelo não é utilizado em todas as aplicações. Por exemplo, na transmissão para celulares móveis,
+o canal é variante no tempo e a função de transferência $C(z)$ não pode ser utilizada. No entanto, esta simplificação continua sendo válida para inúmeras aplicações de transmissão com emissor e receptor fixos. 
+	 
+\section{Alocação de Potência}
+	A potência $P$ de transmissão do sinal é proporcional ao valor quadrático médio do sinal $x[n]$. Assumindo que $x[n]$ é um processo aleatório WSS, então a potência pode ser obtida por: 
+	
+	\[P = \frac{1}{2\pi}\times \int S_{xx}(e^{j\omega})d\omega  \]
+	
+	A densidade espectral de potência $S_{xx}$ nos permite entender como a potência é distribuída na frequência. Desta forma, podemos alocar mais potência nas frequências onde o ganho do canal é alto e o espectro do ruído é baixo, diminuindo a interferência do ruído no sinal recebido. \\
+	Se a função de transferência $C(z)$ do canal é conhecida, então podemos mitigar os ruídos do canal através de um filtro equalizador de função de transferência $C(z)$
+
+\section{O Transmultiplexador Digital}
+	Texto Transmultiplexador Digital
+
+\section{OFDM}
+
+\section{Prefixo Cíclico em OFDM}
+
+A fim de diminuir os problemas de multi-caminhos e facilitar a estimação do canal mais fácil, utiliza-se a técnica de prefixos cíclicos. Considere um sistema de OFDM com $N$ sub-portadoras. O símbolo de OFDM é construído tomando a IDFT do sinal recebido, seguido por um prefixo cíclico. Por exemplo, seja 
+
+\[x' = [x[0], x[1], \ldots x[N-1]]^{T}\]
+
+o símbolo obtido pela IDFT. Inserindo um prefixo de tamanho $L$ em $x'$, o novo símbolo $x$ de OFDM é dado por:
+\[x = [x[N-L+1], \ldots x[N-2], x[N-1], x[0], \ldots x[N-1]]^{T}.\]
+Assumindo que o canal seja representado por $h = [h_{0}, h_{1}, \ldots h_{L-1}]^{T}$, então a convolução com o canal é circular, de forma que $x[m-l] = x'[(m-l) mod (N)]$. Assim, tomando a DFT, temos 
+\[Y[k] = H[k] \times X[k],\]
+
+onde $X[k]$ é a DFT de $x$. Assim, o multi-caminho é convertido em sub-canais paralelos no domínio da frequência, simplificando o projeto do receptor consideravelmente, já que a estimação do canal é reduzida à estimação dos coeficientes escalares $H[k]$ para cada sub-canal. Um vez que todos os valores de ${H[k]}$ são estimados, os valores de ${X[k]}$ são calculados multiplicando-se o símbolo recebido e demodulado pelo inverso de ${H[k]}$. \\
+
+%Fonte: https://en.wikipedia.org/wiki/Cyclic_prefix

@@ -50,6 +50,11 @@ void setup()
    lcd.setCursor(0,0);       // set the LCD cursor   position
    lcd.print("HELLO!");
    
+   s_norte.write(45);
+   s_leste.write(45);
+   s_sul.write(45); 
+   s_oeste.write(45);
+   delay(1000);
    s_norte.write(90);
    s_leste.write(90);
    s_sul.write(90); 
