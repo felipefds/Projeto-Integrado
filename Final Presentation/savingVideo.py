@@ -19,12 +19,12 @@ blueUpper = (152, 196, 255);
 
 pts = deque(maxlen=64)
 
-camera = cv2.VideoCapture(1)
+camera = cv2.VideoCapture(0)
 
 savingVideo = False;
 videoFileCreated = False;
 
-# keep looping
+# keep loopin
 while True:
 	# grab the current frame
     (grabbed, frame) = camera.read()
@@ -135,14 +135,15 @@ while True:
 
     if ((videoFileCreated == False) and (savingVideo == True)):
         # Create video file
-        # video = cv2.create() ???
+        (frame_height, frame_width,_) = frame.shape;
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter('teste.avi',fourcc, 30.0, (frame_width, frame_height))
         print "Video file created.";
         videoFileCreated = True;
 
     if (savingVideo == True):
         # Save frames to video file.
-        # ------ Insert code here
-        #video.write(frame);
+        out.write(frame);
         pass;
 
     if key == ord("v"):
@@ -153,11 +154,9 @@ while True:
         else:
             print "Video saved.";
             #Release video file
-            # Insert Code Here --------
-            # ----- video.release();
+            out.release();
             savingVideo = False;
             videoFileCreated = False;
-
 
 # cleanup the camera and close any open windows
 try:
