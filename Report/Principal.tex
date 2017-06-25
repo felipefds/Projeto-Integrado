@@ -1,0 +1,81 @@
+\documentclass[a4paper,12pt,oneside,openany]{book}	
+\input{pacotes}
+
+%Include Only --------
+%Usar Include Only se quiser compilar apenas 1 capitulo.
+%\includeonly{cap1}
+%\includeonly{cap2}
+
+\begin{document}
+
+\frontmatter
+\thispagestyle{empty}
+
+\input{Capa}
+
+\pagebreak            
+
+\input{Preambulo}
+
+% Table of Contents
+% ---------------------------------------------------------------
+     \tableofcontents
+% ---------------------------------------------------------------
+% Lista de figuras
+% ---------------------------------------------------------------
+%\cleardoublepage
+%\addcontentsline{toc}{chapter}{Lista de Figuras}
+\listoffigures
+% ---------------------------------------------------------------
+% Lista de Tabelas
+% ---------------------------------------------------------------
+%\cleardoublepage
+%\addcontentsline{toc}{chapter}{Lista de Tabelas}
+\listoftables
+
+\mainmatter
+\cleardoublepage
+% ---------------------------------------------------------------
+% Chapter 1 - Introdução
+% ---------------------------------------------------------------
+\chapter{Introdução}
+\label{intro}
+\input{introducao}
+%\include{cap1}
+
+% ---------------------------------------------------------------
+% Chapter 2 - Projeto
+% ---------------------------------------------------------------
+\chapter{Projeto}
+\label{projeto}
+\input{projeto}
+%\include{cap2}
+
+% ---------------------------------------------------------------
+% Chapter 3 - Resultados
+% ---------------------------------------------------------------
+\chapter{Resultados}
+\label{resultados}
+\input{resultados}
+%\include{cap2}
+
+%  ---------------------------------------------------------------
+% Chapter 4 - Conclusões
+% ---------------------------------------------------------------
+\chapter{Conclusão}
+\label{conslusao}
+\input{conclusao}
+%\include{cap4}
+
+% ---------------------------------------------------------------
+% Bibliografia
+% ---------------------------------------------------------------
+% \normalsize
+% \cleardoublepage
+% \addcontentsline{toc}{chapter}{Bibliografia}
+% \bibliographystyle{coppe}
+% \bibliography{biblio}
+
+\backmatter
+
+\end{document}
